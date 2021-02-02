@@ -1,10 +1,11 @@
 #![no_main]
 #![no_std]
 
+use display_interface::WriteOnlyDataCommand;
+use display_interface_parallel_gpio::PGPIO8BitInterface;
 use embedded_hal as _;
 use embedded_hal::blocking::delay::DelayMs;
 use hal::{gpio::Level, Delay};
-use ili9486::interface::parallel::Parallel8Bit;
 use ili9486::{Command, ILI9486};
 use my_app as _;
 use nrf52832_hal as hal;
@@ -37,54 +38,59 @@ fn main() -> ! {
         port0.p0_18.into_push_pull_output(Level::High).degrade(),
     ];
 
-    let ili9486_interface = Parallel8Bit::new(ili9486_wrx, ili9486_rdx, ili9486_dcx, ili9486_dbus);
-    let mut display = ILI9486::new(ili9486_interface, ili9486_csx, ili9486_rsx);
-    defmt::info!("Display created");
+    let mut ili9486_interface = PGPIO8BitInterface::new(ili9486_dbus, ili9486_dcx, ili9486_wrx);
 
-    defmt::info!("Asserting reset");
-    display.assert_reset();
+    let data = [0, 1, 2];
+    ili9486_interface.send_commands(display_interface::DataFormat::U8(&data));
 
-    // Wait minimum 10 us to reset
-    delay.delay_ms(15u32);
+    // let mut display = ILI9486::new(ili9486_interface, ili9486_csx, ili9486_rsx);
+    // defmt::info!("Display created");
 
-    defmt::info!("Deasserting reset");
-    display.deassert_reset();
+    // defmt::info!("Asserting reset");
+    // display.assert_reset();
 
-    // Wait 120 ms before sending any commands
-    delay.delay_ms(120u32);
+    // // Wait minimum 10 us to reset
+    // delay.delay_ms(15u32);
 
-    defmt::info!("Enabling display");
-    display.enable();
+    // defmt::info!("Deasserting reset");
+    // display.deassert_reset();
 
-    defmt::info!("Setting orientation");
-    display.set_orientation();
+    // // Wait 120 ms before sending any commands
+    // delay.delay_ms(120u32);
 
-    defmt::info!("Setting pixel format");
-    display.set_pixel_format();
+    // defmt::info!("Enabling display");
+    // display.enable();
 
-    defmt::info!("Sending sleep out");
-    display.send_command(Command::SleepOut);
+    // defmt::info!("Setting orientation");
+    // display.set_orientation();
 
-    // Wait 5 ms after sleep out before sending any other commands
-    delay.delay_ms(120u32);
+    // defmt::info!("Setting pixel format");
+    // display.set_pixel_format();
 
-    defmt::info!("Sending display on");
-    display.send_command(Command::DisplayOn);
+    // defmt::info!("Sending sleep out");
+    // display.send_command(Command::SleepOut);
 
-    loop {
-        defmt::info!("Setting fill 1");
-        display.set_address();
-        display.fill(0xF800);
-        delay.delay_ms(1000u32);
+    // // Wait 5 ms after sleep out before sending any other commands
+    // delay.delay_ms(120u32);
 
-        defmt::info!("Setting fill 2");
-        display.set_address();
-        display.fill(0x07E0);
-        delay.delay_ms(1000u32);
+    // defmt::info!("Sending display on");
+    // display.send_command(Command::DisplayOn);
 
-        defmt::info!("Setting fill 3");
-        display.set_address();
-        display.fill(0x001F);
-        delay.delay_ms(1000u32);
-    }
+    // loop {
+    //     defmt::info!("Setting fill 1");
+    //     display.set_address();
+    //     display.fill(0xF800);
+    //     delay.delay_ms(1000u32);
+
+    //     defmt::info!("Setting fill 2");
+    //     display.set_address();
+    //     display.fill(0x07E0);
+    //     delay.delay_ms(1000u32);
+
+    //     defmt::info!("Setting fill 3");
+    //     display.set_address();
+    //     display.fill(0x001F);
+    //     delay.delay_ms(1000u32);
+    // }
+    loop {}
 }

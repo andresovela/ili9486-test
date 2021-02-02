@@ -15,7 +15,9 @@ defmt-rtt = "0.1.0"
 embedded-hal = "0.2.4"
 panic-probe = { version = "0.1.0", features = ["print-defmt"] }
 nrf52832-hal = "0.12.0"
-ili9486 = { path = "crates/ili9486", version = "0.1.0" }
+ili9486 = { path = "crates/ili9486-rs", version = "0.1.0" }
+display-interface = { path = "crates/display-interface", version = "0.4.0" }
+display-interface-parallel-gpio = { path = "crates/display-interface/parallel-gpio", version = "0.4.1" }
 
 [features]
 # set logging levels here
