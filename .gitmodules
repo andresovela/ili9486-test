@@ -1,3 +1,0 @@
-[submodule "crates/display-interface"]
-	path = crates/display-interface
-	url = https://github.com/andresovela/display-interface
