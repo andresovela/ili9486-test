@@ -18,7 +18,7 @@ nrf52832-hal = "0.12.0"
 ili9486 = { path = "crates/ili9486-rs", version = "0.1.0" }
 display-interface = "0.4.1"
 display-interface-parallel-gpio = "0.6.0"
-embedded-graphics = "0.6"
+embedded-graphics = "0.7.1"
 
 [features]
 # set logging levels here
